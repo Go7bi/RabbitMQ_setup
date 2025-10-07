@@ -1,4 +1,6 @@
 import pika
+import time
+import random
 
 connection_params = pika.ConnectionParameters('localhost')
 
@@ -8,10 +10,19 @@ channel = connection.channel()
 
 channel.queue_declare(queue="letter_box")
 
-message = "Hi balajiiii"
+message_count = 0
 
-channel.basic_publish(exchange="", routing_key="letter_box", body=message)
+while True:
 
-print(f" [x] Sent '{message}'")
+    message = f'Message {message_count}'
 
-connection.close()
+    channel.basic_publish(exchange="", routing_key="letter_box", body=message)
+
+    print(f" [x] Sent '{message}'")
+
+    time.sleep(random.randint(1, 4))
+
+
+    message_count += 1
+
+    
