@@ -1,4 +1,5 @@
 import pika
+from pika.exchange_type import ExchangeType
 
 connection_params = pika.ConnectionParameters('localhost')
 
@@ -6,11 +7,11 @@ connection = pika.BlockingConnection(connection_params)
 
 channel = connection.channel()
 
-channel.queue_declare(queue="letter_box")
+channel.exchange_declare(exchange='pubsub', exchange_type=ExchangeType.fanout)
 
 message = "Hi balajiiii"
 
-channel.basic_publish(exchange="", routing_key="letter_box", body=message)
+channel.basic_publish(exchange="pubsub", routing_key="", body=message)
 
 print(f" [x] Sent '{message}'")
 
