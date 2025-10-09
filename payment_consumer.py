@@ -2,18 +2,18 @@ import pika
 from pika.exchange_type import ExchangeType
 
 def on_message(ch, method, properties, body):
-    print(f"first_consumer [x] Received '{body}'")
+    print(f"payment_consumer [x] Received '{body}'")
 connection_params = pika.ConnectionParameters('localhost')
 
 connection = pika.BlockingConnection(connection_params)
 
 channel = connection.channel()
 
-channel.exchange_declare(exchange='pubsub', exchange_type=ExchangeType.fanout)
+channel.exchange_declare(exchange='topic', exchange_type=ExchangeType.topic)
 
 queue = channel.queue_declare(queue='',exclusive=True)
 
-channel.queue_bind(exchange='pubsub',queue=queue.method.queue)
+channel.queue_bind(exchange='topic',queue=queue.method.queue,routing_key='#.payment.#')
 
 channel.basic_consume(queue=queue.method.queue,
                       auto_ack=True,on_message_callback=on_message)

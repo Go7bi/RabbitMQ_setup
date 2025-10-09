@@ -7,12 +7,16 @@ connection = pika.BlockingConnection(connection_params)
 
 channel = connection.channel()
 
-channel.exchange_declare(exchange='pubsub', exchange_type=ExchangeType.fanout)
+channel.exchange_declare(exchange='topic', exchange_type=ExchangeType.topic)
 
-message = "Hi balajiiii"
+user_payment_message = "this is user payment message"
+channel.basic_publish(exchange="topic", routing_key="user.erope.payment", body=user_payment_message)
 
-channel.basic_publish(exchange="pubsub", routing_key="", body=message)
+print(f" [x] Sent '{user_payment_message}'")
 
-print(f" [x] Sent '{message}'")
+bussines_paymet_message = "this is eropoen payment message"
+channel.basic_publish(exchange="topic", routing_key="business.europe.order", body=bussines_paymet_message)
+
+print(f" [x] Sent '{bussines_paymet_message}'")
 
 connection.close()
